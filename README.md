@@ -1,4 +1,5 @@
 # 音乐助手
+[![Build Status](https://travis-ci.org/Ezalor/MusicUU.svg?branch=master)](https://travis-ci.org/Ezalor/MusicUU)
 一个免费下载音乐的App
 
 ####使用到的开源项目
