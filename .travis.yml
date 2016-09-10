@@ -21,4 +21,10 @@ deploy:
   skip_cleanup: true
   on:
     repo: Ezalor/MusicUU
+    tags: ture
     all_branches: true
+before_install:
+- gem install fir-cli
+after_deploy:
+- fir p app/build/outputs/apk/app-release-unsigned.apk -T 8cb2a704dfd45a26e8c6d2189a30bdc2
+
