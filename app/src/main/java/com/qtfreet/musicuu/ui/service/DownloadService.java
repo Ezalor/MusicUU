@@ -1,11 +1,9 @@
 package com.qtfreet.musicuu.ui.service;
 
-import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
 import android.os.IBinder;
@@ -24,6 +22,8 @@ import com.qtfreet.musicuu.utils.SPUtils;
 
 import java.io.File;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 /**
  * Created by qtfreet on 2016/3/20.
  */
@@ -39,29 +39,35 @@ public class DownloadService extends Service {
         final String url = intent.getStringExtra(Constants.URL);
         final String name = intent.getStringExtra(Constants.NAME);
         if (url.isEmpty() || name.isEmpty()) {
-            return 0;
+            return super.onStartCommand(intent, flags, startId);
         }
-        final File file = new File(path + "/" + name + ".mp3");
-        if (file.exists()) {
-            AlertDialog dialog = new AlertDialog.Builder(this).create();
-            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-            dialog.setTitle("提示");
-            dialog.setMessage("文件已存在，是否需要重新下载？");
-            dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "否", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    return;
-                }
-            });
-            dialog.setButton(DialogInterface.BUTTON_POSITIVE, "是", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    download(url, name, path);
-                }
-            });
-            dialog.show();
+        final String localName;
+        if (url.contains(".mp3")) {
+            localName = name + ".mp3";
+        } else if (url.contains(".flac")) {
+            localName = name + ".flac";
+        } else if (url.contains(".ape")) {
+            localName = name + ".ape";
         } else {
-            download(url, name, path);
+            localName = name + ".mp3";
+        }
+        final File file = new File(path + "/" + localName);
+        if (file.exists()) {
+            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(this);
+            sweetAlertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            sweetAlertDialog.setTitleText("提示").setContentText("文件已存在，是否需要重新下载？").setConfirmText("是").setCancelText("否");
+            sweetAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                @Override
+                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                    file.delete();
+                    download(url, localName, path);
+                    sweetAlertDialog.dismissWithAnimation();
+                }
+            });
+            sweetAlertDialog.show();
+
+        } else {
+            download(url, localName, path);
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -80,8 +86,9 @@ public class DownloadService extends Service {
             return;
 
         }
+        Log.e("qtfreet0000", "开始下载");
         FileDownloader.getImpl().create(url)
-                .setPath(path + "/" + name + ".mp3")
+                .setPath(path + "/" + name)
                 .setListener(new FileDownloadListener() {
                     @Override
                     protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {

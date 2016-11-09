@@ -26,5 +26,5 @@ deploy:
 before_install:
 - gem install fir-cli
 after_deploy:
-- fir p app/build/outputs/apk/app-release-unsigned.apk -T 8cb2a704dfd45a26e8c6d2189a30bdc2
+- fir p app/build/outputs/apk/app-release-unsigned.apk -T $FIR_TOKEN
 
