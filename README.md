@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/Ezalor/MusicUU.svg?branch=master)](https://travis-ci.org/Ezalor/MusicUU)
 
 一个免费下载音乐的App
+[问题交流反馈社区](http://qtfreet.cn)  
 
 ####使用到的开源项目
 #####网络请求框架
@@ -36,6 +37,14 @@
 * 移除搜索界面右上角小三点，避免屏幕适配问题
 * 现在在搜索条目上向左滑动可显示下载，mv按钮
 * 修改部分提示
+
+######2016.12.6
+* 修复自动更新导致的崩溃bug
+* 优化程序性能
+* 优化部分UI
+* 修复bug
+* 因旧版api已经停用，导致搜索会崩溃，更及时更新到最新版
+* 恢复下载音乐时选择音质选项
 
 ![image](https://raw.githubusercontent.com/Qrilee/MusicUU/master/screenshots/pic.png)
 
